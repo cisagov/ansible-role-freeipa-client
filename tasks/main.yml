@@ -1,2 +1,5 @@
 ---
-# tasks file for skeleton
+- name: Install FreeIPA client
+  package:
+    name: freeipa-client
+    state: present
