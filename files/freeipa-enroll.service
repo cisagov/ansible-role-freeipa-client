@@ -1,0 +1,26 @@
+# /lib/systemd/system/freeipa-enroll.service
+[Unit]
+Description=Handle enrollment and unenrollment of FreeIPA clients
+After=network.target multi-user.target cloud-final.service
+Wants=network-online.target
+Documentation=man:ipa-client-install(8)
+Documentation=https://www.freeipa.org/page/Client
+
+[Service]
+CapabilityBoundingSet=
+DeviceAllow=/dev/null rw
+ExecStart=/usr/local/sbin/setup_freeipa.sh
+ExecStop=/usr/sbin/ipa-client-install --uninstall --unattended
+KillMode=process
+LimitNPROC=10
+PrivateTmp=false
+ProtectHome=true
+ProtectSystem=true
+RemainAfterExit=yes
+Restart=on-failure
+RestartSec=5s
+Type=oneshot
+WorkingDirectory=/tmp
+
+[Install]
+WantedBy=multi-user.target
