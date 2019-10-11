@@ -9,16 +9,14 @@ Documentation=https://www.freeipa.org/page/Client
 [Service]
 CapabilityBoundingSet=
 DeviceAllow=/dev/null rw
-ExecStart=/usr/local/sbin/setup_freeipa.sh
-ExecStop=/usr/sbin/ipa-client-install --uninstall --unattended
+ExecStart=/usr/local/sbin/setup_freeipa.sh enroll
+ExecStop=/usr/local/sbin/setup_freeipa.sh unenroll
 KillMode=process
 LimitNPROC=10
-PrivateTmp=false
+PrivateTmp=true
 ProtectHome=true
 ProtectSystem=true
 RemainAfterExit=yes
-Restart=on-failure
-RestartSec=5s
 Type=oneshot
 WorkingDirectory=/tmp
 
