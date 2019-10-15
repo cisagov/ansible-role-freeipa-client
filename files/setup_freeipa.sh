@@ -13,6 +13,7 @@ set -o pipefail
 # HOSTNAME: The hostname of this IPA client (e.g. client.example.com)
 # REALM: The realm for the IPA server (e.g. EXAMPLE.COM)
 
+# shellcheck disable=SC1091
 source /var/lib/cloud/instance/freeipa-creds.sh
 
 # Get the default Ethernet interface
@@ -38,7 +39,7 @@ function enroll {
     # Check to see if freeipa-client is already installed
     if [[ -f "/etc/ipa/default.conf" ]]; then
         echo "FreeIPA client is already installed... rejoining."
-        echo ${ADMIN_PW} | kinit admin@${REALM}
+        echo "${ADMIN_PW}" | kinit admin@"${REALM}"
         ipa-join || true
         kdestroy
         exit 0
@@ -67,7 +68,7 @@ function enroll {
 }
 
 function unenroll {
-  echo ${ADMIN_PW} | kinit admin@${REALM}
+  echo "${ADMIN_PW}" | kinit admin@"${REALM}"
   ipa-join --unenroll
   rm /etc/krb5.keytab
   kdestroy
