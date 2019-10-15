@@ -7,6 +7,11 @@
 This is an Ansible role for installing the prerequisites for a
 [FreeIPA](https://www.freeipa.org) client.
 
+Users of this role are responsible for pushing the freeipa credentials
+to the server via cloud-init.  See the
+[`freeipa-creds.tpl.yml`](files/freeipa-creds.tpl.yml)
+file for an example of how to do this.
+
 ## Requirements ##
 
 None.

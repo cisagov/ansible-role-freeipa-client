@@ -4,16 +4,16 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
-# These variables must be set before execution.  See the
-# configure_setup_freeipa.sh script for an example of how
-# this is accomplished.
+# This script is called by the freeipa-enroll service.
 
-# The password for the IPA server's Kerberos admin role
-ADMIN_PW=""
-# The hostname of this IPA client (e.g. client.example.com)
-HOSTNAME=""
-# The realm for the IPA server (e.g. EXAMPLE.COM)
-REALM=""
+# These variables must be set before execution.  They will
+# be loaded from a file installed by cloud-init:
+# /var/lib/cloud/instance/freeipa-creds.sh
+# ADMIN_PW: The password for the IPA server's Kerberos admin role
+# HOSTNAME: The hostname of this IPA client (e.g. client.example.com)
+# REALM: The realm for the IPA server (e.g. EXAMPLE.COM)
+
+source /var/lib/cloud/instance/freeipa-creds.sh
 
 # Get the default Ethernet interface
 function get_interface {
