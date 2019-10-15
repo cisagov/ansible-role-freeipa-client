@@ -18,7 +18,7 @@ FREEIPA_CRED_FILE=/var/lib/cloud/instance/freeipa-creds.sh
 
 # Check to see if the credentials file was installed.
 if [[ -f "${FREEIPA_CRED_FILE}" ]]; then
-  # File only available at runtime on server
+  # Disable following since file only available at runtime on server
   # shellcheck disable=SC1090
   source "${FREEIPA_CRED_FILE}"
 else
