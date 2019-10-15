@@ -8,7 +8,7 @@
   copy:
     src: setup_freeipa.sh
     owner: root
-    mode: 0700
+    mode: 0500
     dest: /usr/local/sbin/
 
 - name: Install FreeIPA enrollment service
