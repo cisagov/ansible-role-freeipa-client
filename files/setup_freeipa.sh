@@ -4,17 +4,28 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
+
 # This script is called by the freeipa-enroll service.
 
 # These variables must be set before execution.  They will
 # be loaded from a file installed by cloud-init:
-# /var/lib/cloud/instance/freeipa-creds.sh
+
+FREEIPA_CRED_FILE=/var/lib/cloud/instance/freeipa-creds.sh
+
 # ADMIN_PW: The password for the IPA server's Kerberos admin role
 # HOSTNAME: The hostname of this IPA client (e.g. client.example.com)
 # REALM: The realm for the IPA server (e.g. EXAMPLE.COM)
 
-# shellcheck disable=SC1091
-source /var/lib/cloud/instance/freeipa-creds.sh
+# Check to see if the credentials file was installed.
+if [[ -f "${FREEIPA_CRED_FILE}" ]]; then
+  # File only available at runtime on server
+  # shellcheck disable=SC1090
+  source "${FREEIPA_CRED_FILE}"
+else
+  echo "FreeIPA credential file does not exist: ${FREEIPA_CRED_FILE}"
+  echo "It should have been created by cloud-init at boot."
+  exit 254
+fi
 
 # Get the default Ethernet interface
 function get_interface {
@@ -48,12 +59,13 @@ function enroll {
     interface=$(get_interface)
     ip_address=$(get_ip "$interface")
 
-    # Wait until the IP address has a non-Amazon PTR record before
-    # proceeding
+    # Wait until the IP address PTR record matches our hostname
     ptr=$(get_ptr "$ip_address")
-    while grep amazon <<< "$ptr"
+    while [[ $ptr != "$HOSTNAME". ]]
     do
-        sleep 30
+        echo "Waiting for ${ip_address} PTR record to match hostname."
+        echo "Hostname: ${HOSTNAME} PTR: ${ptr}"
+        sleep 10
         ptr=$(get_ptr "$ip_address")
     done
 
