@@ -33,12 +33,7 @@ def test_files(host, f, mode, content):
     assert host.file(f).contains(content)
 
 
-@pytest.mark.parametrize("service,isEnabled", [("freeipa-enroll", True)])
-def test_services(host, service, isEnabled):
-    """Test that the expected services were enabled or disabled as intended."""
-    if (
-        host.system_info.distribution == "debian"
-        or host.system_info.distribution == "ubuntu"
-    ):
-        svc = host.service(service)
-        assert svc.is_enabled == isEnabled
+@pytest.mark.parametrize("service", ["freeipa-enroll"])
+def test_services(host, service):
+    """Test that the expected services were enabled."""
+    assert host.service(service).is_enabled
