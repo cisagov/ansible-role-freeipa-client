@@ -18,13 +18,13 @@ FREEIPA_CRED_FILE=/var/lib/cloud/instance/freeipa-creds.sh
 
 # Check to see if the credentials file was installed.
 if [[ -f "${FREEIPA_CRED_FILE}" ]]; then
-  # Disable following since file only available at runtime on server
-  # shellcheck disable=SC1090
-  source "${FREEIPA_CRED_FILE}"
+    # Disable following since file only available at runtime on server
+    # shellcheck disable=SC1090
+    source "${FREEIPA_CRED_FILE}"
 else
-  echo "FreeIPA credential file does not exist: ${FREEIPA_CRED_FILE}"
-  echo "It should have been created by cloud-init at boot."
-  exit 254
+    echo "FreeIPA credential file does not exist: ${FREEIPA_CRED_FILE}"
+    echo "It should have been created by cloud-init at boot."
+    exit 254
 fi
 
 # Get the default Ethernet interface
@@ -48,7 +48,8 @@ function get_ptr {
 
 function enroll {
     # Check to see if freeipa-client is already installed
-    if [[ -f "/etc/ipa/default.conf" ]]; then
+    if [[ -f "/etc/ipa/default.conf" ]]
+    then
         echo "FreeIPA client is already installed... rejoining."
         echo "${ADMIN_PW}" | kinit admin@"${REALM}"
         ipa-join || true
@@ -80,11 +81,11 @@ function enroll {
 }
 
 function unenroll {
-  echo "${ADMIN_PW}" | kinit admin@"${REALM}"
-  ipa-join --unenroll
-  rm /etc/krb5.keytab
-  kdestroy
-  exit 0
+    echo "${ADMIN_PW}" | kinit admin@"${REALM}"
+    ipa-join --unenroll
+    rm /etc/krb5.keytab
+    kdestroy
+    exit 0
 }
 
 if [ $# -lt 1 ]
@@ -95,12 +96,12 @@ fi
 
 case "$1" in
     enroll)
-      enroll
-      ;;
+        enroll
+        ;;
     unenroll)
-      unenroll
-      ;;
+        unenroll
+        ;;
     *)
-    echo "unknown command.  Valid commands are: enroll | unenroll"
-    exit 255
+        echo "unknown command.  Valid commands are: enroll | unenroll"
+        exit 255
 esac
