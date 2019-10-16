@@ -25,10 +25,6 @@
         name:
           - init
 
-# The Ubuntu 16.04 Docker image we are using
-# (geerlingguy/docker-ubuntu1604-ansible:latest) needs a cache update
-# before it can install anything.
-#
 # The Fedora 29 image we are using
 # (geerlingguy/docker-fedora29-ansible:latest) needs a cache update
 # and all packages updated.  This seems to help reduce sporadic errors
@@ -41,12 +37,6 @@
     - name: Group hosts by OS distribution and major version
       group_by:
         key: os_{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_major_version'] }}
-- name: Update apt cache (Ubuntu 16)
-  hosts: os_Ubuntu_16
-  tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
 - name: Update all packages (Fedora 29)
   hosts: os_Fedora_29
   tasks:
