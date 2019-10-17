@@ -7,8 +7,8 @@ Documentation=man:ipa-client-install(8)
 Documentation=https://www.freeipa.org/page/Client
 
 [Service]
-CapabilityBoundingSet=
-DeviceAllow=/dev/null rw
+#TODO: We want to lock this down to required capabilities
+#CapabilityBoundingSet=
 ExecStart=/usr/local/sbin/setup_freeipa.sh enroll
 ExecStop=/usr/local/sbin/setup_freeipa.sh unenroll
 KillMode=process
