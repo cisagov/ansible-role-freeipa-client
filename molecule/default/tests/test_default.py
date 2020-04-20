@@ -12,10 +12,18 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 ).get_hosts("all")
 
 
-@pytest.mark.parametrize("pkg", ["freeipa-client"])
-def test_packages(host, pkg):
+@pytest.mark.parametrize("pkg", ["ipa-client"])
+def test_packages_amazon(host, pkg):
     """Test that the appropriate packages were installed."""
-    assert host.package(pkg).is_installed
+    if host.system_info.distribution == "amzn":
+        assert host.package(pkg).is_installed
+
+
+@pytest.mark.parametrize("pkg", ["freeipa-client"])
+def test_packages_fedora(host, pkg):
+    """Test that the appropriate packages were installed."""
+    if host.system_info.distribution == "fedora":
+        assert host.package(pkg).is_installed
 
 
 @pytest.mark.parametrize(
