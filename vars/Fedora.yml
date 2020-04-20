@@ -1,5 +1,5 @@
 ---
-# vars file for RedHat
+# vars file for Fedora
 
 # The packages to install for FreeIPA/IPA client
 package_names:
