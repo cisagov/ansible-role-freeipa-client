@@ -15,7 +15,7 @@ galaxy_info:
         # Kali linux isn't an option here, but it is based on
         # Debian Testing:
         # https://www.kali.org/docs/policy/kali-linux-relationship-with-debian
-        - bullseye
+        # - bullseye
     - name: Fedora
       versions:
         - 29
