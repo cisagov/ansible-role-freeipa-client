@@ -1,0 +1,6 @@
+---
+# vars file for Fedora
+
+# The packages to install for FreeIPA/IPA client
+package_names:
+  - freeipa-client
