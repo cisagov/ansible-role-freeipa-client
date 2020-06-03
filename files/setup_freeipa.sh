@@ -78,6 +78,10 @@ function enroll {
                        --no-ntp \
                        --unattended \
                        --force-join
+
+    # Trust the self-signed FreeIPA CA.  This is run automatically on
+    # Fedora but not on Debian.  It doesn't hurt to run it twice.
+    ipa-certupdate
 }
 
 function unenroll {
