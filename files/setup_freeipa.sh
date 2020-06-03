@@ -70,11 +70,7 @@ function enroll {
         ptr=$(get_ptr "$ip_address")
     done
 
-    # In some cases there are extra bits prepended to the domain, like
-    # guac.env0.cool.cyber.dhs.gov.  Therefore it makes sense to
-    # specify the domain as a lowercase version of the realm.
     ipa-client-install --realm="${REALM}" \
-                       --domain="${REALM,,}" \
                        --principal=admin \
                        --password="${ADMIN_PW}" \
                        --mkhomedir \
