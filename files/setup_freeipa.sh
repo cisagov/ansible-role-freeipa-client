@@ -78,12 +78,6 @@ function enroll {
                        --no-ntp \
                        --unattended \
                        --force-join
-
-    # Trust the self-signed FreeIPA CA.  This is run automatically on
-    # Fedora but not on Debian.  It doesn't hurt to run it twice.
-    echo "$ADMIN_PW" | kinit admin
-    ipa-certupdate
-    kdestroy
 }
 
 function unenroll {
