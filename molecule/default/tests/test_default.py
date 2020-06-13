@@ -20,9 +20,9 @@ def test_packages_amazon(host, pkg):
 
 
 @pytest.mark.parametrize("pkg", ["freeipa-client"])
-def test_packages_fedora(host, pkg):
+def test_packages_not_amazon(host, pkg):
     """Test that the appropriate packages were installed."""
-    if host.system_info.distribution == "fedora":
+    if host.system_info.distribution != "amzn":
         assert host.package(pkg).is_installed
 
 
