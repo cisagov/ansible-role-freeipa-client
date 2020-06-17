@@ -17,30 +17,9 @@
   package:
     name: "{{ package_names }}"
 
-- name: Install enrollment helper script
+- name: Copy setup script
   copy:
     src: setup_freeipa.sh
     owner: root
     mode: 0500
     dest: /usr/local/sbin/
-
-- name: Install FreeIPA enrollment service
-  copy:
-    src: freeipa-enroll.service
-    owner: root
-    mode: 0644
-    dest: /lib/systemd/system/
-
-# Unless you do this, systemd can sometimes get confused when you try
-# to start a service you just installed
-- name: Systemd daemon-reload
-  systemd:
-    daemon_reload: true
-  when:
-    - ansible_service_mgr == "systemd"
-
-- name: Enable FreeIPA enrollment service
-  service:
-    name: freeipa-enroll
-    enabled: yes
-    state: stopped

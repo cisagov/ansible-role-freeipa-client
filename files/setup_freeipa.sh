@@ -4,104 +4,48 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
+# These variables must be set before client installation:
+#
+# domain: The domain for the IPA client (e.g. example.com).
+#
+# hostname: The hostname of this IPA client (e.g. client.example.com).
 
-# This script is called by the freeipa-enroll service.
+# The file installed by cloud-init that contains the value for the
+# above variables.
+freeipa_vars_file=/var/lib/cloud/instance/freeipa-vars.sh
 
-# These variables must be set before execution.  They will
-# be loaded from a file installed by cloud-init:
-
-FREEIPA_CRED_FILE=/var/lib/cloud/instance/freeipa-creds.sh
-
-# ADMIN_PW: The password for the IPA server's Kerberos admin role
-# HOSTNAME: The hostname of this IPA client (e.g. client.example.com)
-# REALM: The realm for the IPA server (e.g. EXAMPLE.COM)
-
-# Check to see if the credentials file was installed.
-if [[ -f "${FREEIPA_CRED_FILE}" ]]; then
-    # Disable following since file only available at runtime on server
+# Load above variable from a file installed by cloud-init:
+if [[ -f "$freeipa_vars_file" ]]; then
+    # Disable this warning since the file is only available at runtime
+    # on the server.
+    #
     # shellcheck disable=SC1090
-    source "${FREEIPA_CRED_FILE}"
+    source "$freeipa_vars_file"
 else
-    echo "FreeIPA credential file does not exist: ${FREEIPA_CRED_FILE}"
+    echo "FreeIPA variables file does not exist: $freeipa_vars_file"
     echo "It should have been created by cloud-init at boot."
     exit 254
 fi
 
-# Get the default Ethernet interface
-function get_interface {
-    ip route | grep default | sed "s/^.* dev \([^ ]*\).*$/\1/"
-}
+# Configure the host to be a FreeIPA client and join the domain.
+#
+# hostname is defined in the FreeIPA variables file that is sourced
+# toward the top of this file.  Hence we can ignore the "undefined
+# variable" warning from shellcheck.
+#
+# shellcheck disable=SC2154
+ipa-client-install --hostname="$hostname" \
+                   --mkhomedir \
+                   --no-ntp
 
-# Get the IP address corresponding to an interface
-function get_ip {
-    ip --family inet address show dev "$1" | \
-        grep inet | \
-        sed "s/^ *//" | \
-        cut --delimiter=' ' --fields=2 | \
-        cut --delimiter='/' --fields=1
-}
-
-# Get the PTR record corresponding to an IP
-function get_ptr {
-    dig +noall +ans -x "$1" | sed "s/.*PTR[[:space:]]*\(.*\)/\1/"
-}
-
-function enroll {
-    # Check to see if freeipa-client is already installed
-    if [[ -f "/etc/ipa/default.conf" ]]
-    then
-        echo "FreeIPA client is already installed... rejoining."
-        echo "${ADMIN_PW}" | kinit admin@"${REALM}"
-        ipa-join || true
-        kdestroy
-        exit 0
-    fi
-
-    interface=$(get_interface)
-    ip_address=$(get_ip "$interface")
-
-    # Wait until the IP address PTR record matches our hostname
-    ptr=$(get_ptr "$ip_address")
-    while [[ $ptr != "$HOSTNAME". ]]
-    do
-        echo "Waiting for ${ip_address} PTR record to match hostname."
-        echo "Hostname: ${HOSTNAME} PTR: ${ptr}"
-        sleep 10
-        ptr=$(get_ptr "$ip_address")
-    done
-
-    ipa-client-install --realm="${REALM}" \
-                       --principal=admin \
-                       --password="${ADMIN_PW}" \
-                       --mkhomedir \
-                       --hostname="${HOSTNAME}" \
-                       --no-ntp \
-                       --unattended \
-                       --force-join
-}
-
-function unenroll {
-    echo "${ADMIN_PW}" | kinit admin@"${REALM}"
-    ipa-join --unenroll
-    rm /etc/krb5.keytab
-    kdestroy
-    exit 0
-}
-
-if [ $# -lt 1 ]
-then
-    echo "command required: enroll | unenroll"
-    exit 255
-fi
-
-case "$1" in
-    enroll)
-        enroll
-        ;;
-    unenroll)
-        unenroll
-        ;;
-    *)
-        echo "unknown command.  Valid commands are: enroll | unenroll"
-        exit 255
-esac
+# Add a principal alias for the instance ID so folks can ssh in via
+# SSM Session Manager.
+#
+# domain is defined in the FreeIPA variables file that is sourced
+# toward the top of this file.  Hence we can ignore the "undefined
+# variable" warning from shellcheck.
+#
+# shellcheck disable=SC2154
+ipa host-add-principal \
+    "$hostname" \
+    host/"$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)"."$domain"
