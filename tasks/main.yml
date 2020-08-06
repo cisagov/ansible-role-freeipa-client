@@ -19,7 +19,7 @@
 
 - name: Copy setup script
   copy:
-    src: setup_freeipa.sh
+    src: 00_setup_freeipa.sh
     owner: root
     mode: 0500
     dest: /usr/local/sbin/
