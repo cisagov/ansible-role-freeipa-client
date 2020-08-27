@@ -4,7 +4,7 @@ galaxy_info:
   description: Install FreeIPA client.
   company: CISA Cyber Assessments
   galaxy_tags:
-    - skeleton
+    - freeipa
   license: CC0
   min_ansible_version: 2.0
   platforms:
@@ -26,11 +26,6 @@ galaxy_info:
       versions:
         - bionic
         - xenial
-<<<<<<< HEAD
-  galaxy_tags:
-    - freeipa
-=======
-  role_name: skeleton
->>>>>>> 05c10e6aff9ff1f827e3b4b10511f9b28fa05b71
+  role_name: freeipa_client
 
 dependencies: []
