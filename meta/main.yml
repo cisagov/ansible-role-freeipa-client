@@ -3,6 +3,8 @@ galaxy_info:
   author: Shane Frasier
   description: Install FreeIPA client.
   company: CISA Cyber Assessments
+  galaxy_tags:
+    - freeipa
   license: CC0
   min_ansible_version: 2.0
   platforms:
@@ -24,7 +26,6 @@ galaxy_info:
       versions:
         - bionic
         - xenial
-  galaxy_tags:
-    - freeipa
+  role_name: freeipa_client
 
 dependencies: []
