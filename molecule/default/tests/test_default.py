@@ -27,7 +27,8 @@ def test_packages_not_amazon(host, pkg):
 
 
 @pytest.mark.parametrize(
-    "f,mode", [("/usr/local/sbin/00_setup_freeipa.sh", 0o500)],
+    "f,mode",
+    [("/usr/local/sbin/00_setup_freeipa.sh", 0o500)],
 )
 def test_files(host, f, mode):
     """Test that the appropriate files were installed."""
