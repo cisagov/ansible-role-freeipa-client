@@ -16,90 +16,90 @@ freeipa_vars_file=/var/lib/cloud/instance/freeipa-vars.sh
 
 # Load above variable from a file installed by cloud-init:
 if [[ -f "$freeipa_vars_file" ]]; then
-    # Disable this warning since the file is only available at runtime
-    # on the server.
-    #
-    # shellcheck disable=SC1090
-    source "$freeipa_vars_file"
+  # Disable this warning since the file is only available at runtime
+  # on the server.
+  #
+  # shellcheck disable=SC1090
+  source "$freeipa_vars_file"
 else
-    echo "FreeIPA variables file does not exist: $freeipa_vars_file"
-    echo "It should have been created by cloud-init at boot."
-    exit 254
+  echo "FreeIPA variables file does not exist: $freeipa_vars_file"
+  echo "It should have been created by cloud-init at boot."
+  exit 254
 fi
 
 # Add a principal alias for the instance ID so folks can ssh in via
 # SSM Session Manager.  First check to make sure the alias does not
 # already exist.
 function add_principal {
-    instance_id=$(curl --silent \
-                       http://169.254.169.254/latest/meta-data/instance-id)
+  instance_id=$(curl --silent \
+    http://169.254.169.254/latest/meta-data/instance-id)
 
-    # domain and hostname are defined in the FreeIPA variables
-    # file that is sourced toward the top of this file.  Hence we
-    # can ignore the "undefined variable" warning from shellcheck.
-    #
-    # shellcheck disable=SC2154
-    if ipa host-show "$hostname" | \
-            grep "Principal alias" | \
-            grep --invert-match host/"$instance_id"."$domain"
-    then
-        ipa host-add-principal "$hostname" host/"$instance_id"."$domain"
-    fi
+  # domain and hostname are defined in the FreeIPA variables
+  # file that is sourced toward the top of this file.  Hence we
+  # can ignore the "undefined variable" warning from shellcheck.
+  #
+  # shellcheck disable=SC2154
+  if ipa host-show "$hostname" | \
+    grep "Principal alias" | \
+    grep --invert-match host/"$instance_id"."$domain"
+  then
+    ipa host-add-principal "$hostname" host/"$instance_id"."$domain"
+  fi
 }
 
 # Configure the host to be a FreeIPA client and join the domain.
 function install {
-    # hostname is defined in the FreeIPA variables file that is
-    # sourced toward the top of this file.  Hence we can ignore the
-    # "undefined variable" warning from shellcheck.
-    #
-    # shellcheck disable=SC2154
-    ipa-client-install --hostname="$hostname" \
-                       --mkhomedir \
-                       --no-ntp
+  # hostname is defined in the FreeIPA variables file that is
+  # sourced toward the top of this file.  Hence we can ignore the
+  # "undefined variable" warning from shellcheck.
+  #
+  # shellcheck disable=SC2154
+  ipa-client-install --hostname="$hostname" \
+    --mkhomedir \
+    --no-ntp
 
-    add_principal
+  add_principal
 }
 
 function enroll {
-    ipa-join
-    add_principal
+  ipa-join
+  add_principal
 }
 
 function unenroll {
-    ipa-join --unenroll
-    # hostname is defined in the FreeIPA variables file that is
-    # sourced toward the top of this file.  Hence we can ignore the
-    # "undefined variable" warning from shellcheck.
-    #
-    # shellcheck disable=SC2154
-    ipa-rmkeytab -p "host/$hostname" -k /etc/krb5.keytab
+  ipa-join --unenroll
+  # hostname is defined in the FreeIPA variables file that is
+  # sourced toward the top of this file.  Hence we can ignore the
+  # "undefined variable" warning from shellcheck.
+  #
+  # shellcheck disable=SC2154
+  ipa-rmkeytab -p "host/$hostname" -k /etc/krb5.keytab
 }
 
 
 if [ $# -ne 0 ] && [ $# -ne 1 ]
 then
-    echo "Program takes zero or one arguments: $0 (enroll | unenroll)"
-    exit 255
+  echo "Program takes zero or one arguments: $0 (enroll | unenroll)"
+  exit 255
 fi
 
 case $# in
-    0)
-        install
+  0)
+    install
+    ;;
+  1)
+    case $1 in
+      enroll)
+        enroll
         ;;
-    1)
-        case $1 in
-            enroll)
-                enroll
-                ;;
-            unenroll)
-                unenroll
-                ;;
-            *)
-                # It should not be possible to get here
-                echo "If a single argument is provided, it must be enroll or unenroll"
-                exit 255
-                ;;
-        esac
+      unenroll)
+        unenroll
         ;;
+      *)
+        # It should not be possible to get here
+        echo "If a single argument is provided, it must be enroll or unenroll"
+        exit 255
+        ;;
+    esac
+    ;;
 esac
