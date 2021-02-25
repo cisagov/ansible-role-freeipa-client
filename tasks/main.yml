@@ -1,6 +1,6 @@
 ---
 - name: Load var file with package names based on the OS type
-  include_vars: "{{ lookup('first_found', params) }}"
+  ansible.builtin.include_vars: "{{ lookup('first_found', params) }}"
   vars:
     params:
       files:
@@ -11,11 +11,11 @@
         - "{{ role_path }}/vars"
 
 - name: Install FreeIPA client
-  package:
+  ansible.builtin.package:
     name: "{{ package_names }}"
 
 - name: Copy setup script
-  copy:
+  ansible.builtin.copy:
     src: 00_setup_freeipa.sh
     owner: root
     mode: 0500
