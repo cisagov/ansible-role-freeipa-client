@@ -31,7 +31,14 @@ fi
 # SSM Session Manager.  First check to make sure the alias does not
 # already exist.
 function add_principal {
+  # Grab the instance ID from the AWS Instance Meta-Data Service
+  # (IMDSv2)
+  imds_token=$(curl --silent \
+      --request PUT \
+      --header "X-aws-ec2-metadata-token-ttl-seconds: 10" \
+    http://169.254.169.254/latest/api/token)
   instance_id=$(curl --silent \
+      --header "X-aws-ec2-metadata-token: $imds_token" \
     http://169.254.169.254/latest/meta-data/instance-id)
 
   # domain and hostname are defined in the FreeIPA variables
