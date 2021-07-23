@@ -34,24 +34,22 @@ function add_principal {
   # Grab the instance ID from the AWS Instance Meta-Data Service
   # (IMDSv2)
   imds_token=$(curl --silent \
-      --request PUT \
-      --header "X-aws-ec2-metadata-token-ttl-seconds: 10" \
+    --request PUT \
+    --header "X-aws-ec2-metadata-token-ttl-seconds: 10" \
     http://169.254.169.254/latest/api/token)
   instance_id=$(curl --silent \
-      --header "X-aws-ec2-metadata-token: $imds_token" \
+    --header "X-aws-ec2-metadata-token: $imds_token" \
     http://169.254.169.254/latest/meta-data/instance-id)
   # Verify that the instance ID is valid
-  if [[ $instance_id =~ ^i-[0-9a-f]{17}$ ]]
-  then
+  if [[ $instance_id =~ ^i-[0-9a-f]{17}$ ]]; then
     # domain and hostname are defined in the FreeIPA variables
     # file that is sourced toward the top of this file.  Hence we
     # can ignore the "undefined variable" warning from shellcheck.
     #
     # shellcheck disable=SC2154
-    if ipa host-show "$hostname" | \
-      grep "Principal alias" | \
-      grep --invert-match host/"$instance_id"."$domain"
-    then
+    if ipa host-show "$hostname" \
+      | grep "Principal alias" \
+      | grep --invert-match host/"$instance_id"."$domain"; then
       ipa host-add-principal "$hostname" host/"$instance_id"."$domain"
     else
       echo Principal alias host/"$instance_id"."$domain" already \
@@ -92,9 +90,7 @@ function unenroll {
   ipa-rmkeytab -p "host/$hostname" -k /etc/krb5.keytab
 }
 
-
-if [ $# -ne 0 ] && [ $# -ne 1 ]
-then
+if [ $# -ne 0 ] && [ $# -ne 1 ]; then
   echo "Program takes zero or one arguments: $0 (enroll | unenroll)"
   exit 255
 fi
