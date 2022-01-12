@@ -36,4 +36,6 @@ galaxy_info:
         - focal
   role_name: freeipa_client
 
-dependencies: []
+dependencies:
+  - src: https://github.com/cisagov/ansible-role-backports
+    name: backports
