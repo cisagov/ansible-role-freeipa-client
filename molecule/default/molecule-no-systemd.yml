@@ -20,12 +20,12 @@ platforms:
     image: amazonlinux:2
   - name: debian10
     image: debian:buster-slim
-  # The freeipa-client package does not appear to be present in
-  # Debian testing right now.
-  # - name: debian11
-  #   image: debian:bullseye-slim
-  # - name: kali
-  #   image: kalilinux/kali-rolling
+  - name: debian11
+    image: debian:bullseye-slim
+  - name: debian12
+    image: debian:bookworm-slim
+  - name: kali
+    image: kalilinux/kali-rolling
   - name: fedora32
     image: fedora:32
   - name: fedora33
