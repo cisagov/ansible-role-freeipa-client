@@ -11,8 +11,20 @@
         - "{{ role_path }}/vars"
 
 - name: Install FreeIPA client
-  ansible.builtin.package:
-    name: "{{ package_names }}"
+  block:
+    - name: Install FreeIPA client (Debian Bullseye)
+      ansible.builtin.package:
+        name: "{{ package_names }}"
+        default_release: "{{ ansible_distribution_release }}-backports"
+      when:
+        - ansible_distribution == "Debian"
+        - ansible_distribution_release == "bullseye"
+
+    - name: Install FreeIPA client (not Debian Bullseye)
+      ansible.builtin.package:
+        name: "{{ package_names }}"
+      when:
+        - not (ansible_distribution == "Debian" and ansible_distribution_release == "bullseye")
 
 - name: Copy setup script
   ansible.builtin.copy:

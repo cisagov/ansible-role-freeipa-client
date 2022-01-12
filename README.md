@@ -29,7 +29,9 @@ None.
 
 ## Dependencies ##
 
-None.
+- [cisagov/ansible-role-backports](https://github.com/cisagov/ansible-role-backports):
+  On Debian Bullseye the `freeipa-client` package is only available
+  from the backports package repo.
 
 ## Example Playbook ##
 
