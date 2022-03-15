@@ -19,7 +19,7 @@
             name: "{{ package_names }}"
             default_release: "{{ ansible_distribution_release }}-backports"
         # On Debian Bullseye, the default /etc/krb5.conf file uses a
-        # FILE value for this option.  The /krb5.conf file is then
+        # FILE value for this option.  The /etc/krb5.conf file is then
         # overwritten when the 00_setup_freeipa.sh script is run, and
         # the new file uses the KEYRING value specified below.  This
         # causes a problem since before running that script we kinit,
