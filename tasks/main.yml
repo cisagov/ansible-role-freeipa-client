@@ -29,6 +29,9 @@
         # the preferred value before the script can ever be run.
         - name: Set default ccache name for Kerberos (Debian Bullseye)
           community.general.ini_file:
+            # These are the permissions that are set by default on
+            # Debian Bullseye.
+            mode: 0644
             option: default_ccache_name
             path: /etc/krb5.conf
             section: libdefaults
