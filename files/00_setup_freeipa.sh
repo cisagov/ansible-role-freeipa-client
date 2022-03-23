@@ -61,6 +61,28 @@ function add_principal {
   fi
 }
 
+# Fix a bug in the sssd.conf file for Debian Bullseye
+function fix_sssd_conf_file {
+  # On Debian Bullseye, the SSSD config file incorrectly contains a
+  # line of the form "services = ..." in the sssd section.  This line
+  # is unnecessary since we are using SystemD (as described in
+  # https://manpages.debian.org/testing/sssd-common/sssd.conf.5.en.html#The_%5Bsssd%5D_section),
+  # and on Debian Bullseye its presence causes a failure.  This is
+  # because SystemD tries to enable and start those services, but they
+  # are only meant to be triggered when the corresponding SystemD
+  # *.socket units are activated.
+  #
+  # Note that /usr/bin/lsb_release is a Debian-specific tool, so if it
+  # doesn't exist then we know we are not on Debian.
+  if [[ -x /usr/bin/lsb_release ]] \
+    && [[ "$(lsb_release --id | sed -e 's/^Distributor ID:[[:blank:]]*\(.*\)$/\1/')" = "Debian" ]] \
+    && [[ "$(lsb_release --codename | sed -e 's/^Codename:[[:blank:]]*\(.*\)$/\1/')" = "bullseye" ]]; then
+    sed -i "/^[[:blank:]]*services =/d" /etc/sssd/sssd.conf
+
+    systemctl restart sssd.service
+  fi
+}
+
 # Configure the host to be a FreeIPA client and join the domain.
 function install {
   # hostname is defined in the FreeIPA variables file that is
@@ -73,6 +95,7 @@ function install {
     --no-ntp
 
   add_principal
+  fix_sssd_conf_file
 }
 
 function enroll {
