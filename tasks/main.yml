@@ -12,39 +12,30 @@
 
 - name: Install FreeIPA client
   block:
-    - name: Install FreeIPA client (Debian Bullseye)
-      block:
-        - name: Install FreeIPA client (Debian Bullseye)
-          ansible.builtin.package:
-            name: "{{ package_names }}"
-            default_release: "{{ ansible_distribution_release }}-backports"
-        # On Debian Bullseye, the default /etc/krb5.conf file uses a
-        # FILE value for this option.  The /etc/krb5.conf file is then
-        # overwritten when the 00_setup_freeipa.sh script is run, and
-        # the new file uses the KEYRING value specified below.  This
-        # causes a problem since before running that script we kinit,
-        # which stores our keytab in a file that is then ignored by
-        # Kerberos due to the new configuration.  To avoid this
-        # wrinkle we simply adjust the default configuration to use
-        # the preferred value before the script can ever be run.
-        - name: Set default ccache name for Kerberos (Debian Bullseye)
-          community.general.ini_file:
-            # These are the permissions that are set by default on
-            # Debian Bullseye.
-            mode: 0644
-            option: default_ccache_name
-            path: /etc/krb5.conf
-            section: libdefaults
-            value: KEYRING:persistent:%{uid}
+    - name: Install FreeIPA client
+      ansible.builtin.package:
+        name: "{{ package_names }}"
+    # On Debian Bullseye, the default /etc/krb5.conf file uses a FILE
+    # value for this option.  The /etc/krb5.conf file is then
+    # overwritten when the 00_setup_freeipa.sh script is run, and the
+    # new file uses the KEYRING value specified below.  This causes a
+    # problem since before running that script we kinit, which stores
+    # our keytab in a file that is then ignored by Kerberos due to the
+    # new configuration.  To avoid this wrinkle we simply adjust the
+    # default configuration to use the preferred value before the
+    # script can ever be run.
+    - name: Set default ccache name for Kerberos (Debian Bullseye only)
+      community.general.ini_file:
+        # These are the permissions that are set by default on
+        # Debian Bullseye.
+        mode: 0644
+        option: default_ccache_name
+        path: /etc/krb5.conf
+        section: libdefaults
+        value: KEYRING:persistent:%{uid}
       when:
         - ansible_distribution == "Debian"
         - ansible_distribution_release == "bullseye"
-
-    - name: Install FreeIPA client (not Debian Bullseye)
-      ansible.builtin.package:
-        name: "{{ package_names }}"
-      when:
-        - not (ansible_distribution == "Debian" and ansible_distribution_release == "bullseye")
 
 - name: Copy setup script
   ansible.builtin.copy:
