@@ -22,10 +22,16 @@ platforms:
     image: debian:buster-slim
   - name: debian11
     image: debian:bullseye-slim
-  - name: debian12
-    image: debian:bookworm-slim
-  - name: kali
-    image: kalilinux/kali-rolling
+  # There is currently no freeipa-client package for Debian Testing
+  # (Bookworm) or Kali.  Once Bookworm is actually released a
+  # freeipa-client will appear in bookworm-backports.
+  #
+  # See cisagov/ansible-role-freeipa-client#51
+  #
+  # - name: debian12
+  #   image: debian:bookworm-slim
+  # - name: kali
+  #   image: kalilinux/kali-rolling
   - name: fedora34
     image: fedora:34
   - name: fedora35
