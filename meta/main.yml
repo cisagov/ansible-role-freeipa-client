@@ -21,16 +21,10 @@ galaxy_info:
       versions:
         - buster
         - bullseye
-        # There is currently no freeipa-client package for Debian
-        # Testing (Bookworm) or Kali.  Once Bookworm is actually
-        # released a freeipa-client will appear in bookworm-backports.
-        #
-        # See cisagov/ansible-role-freeipa-client#51
-        #
         # Kali linux isn't an option here, but it is based on
         # Debian Testing:
         # https://www.kali.org/docs/policy/kali-linux-relationship-with-debian
-        # - bookworm
+        - bookworm
     - name: Fedora
       versions:
         - "35"
