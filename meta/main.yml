@@ -1,8 +1,11 @@
 ---
+dependencies:
+  - src: https://github.com/cisagov/ansible-role-backports
+    name: backports
 galaxy_info:
   author: Shane Frasier
-  description: Install FreeIPA client.
   company: CISA Cyber Assessments
+  description: Install FreeIPA client.
   galaxy_tags:
     - freeipa
   license: CC0
@@ -27,7 +30,6 @@ galaxy_info:
         - bookworm
     - name: Fedora
       versions:
-        - "35"
         - "36"
         - "37"
     - name: Ubuntu
@@ -36,7 +38,3 @@ galaxy_info:
         - focal
         - jammy
   role_name: freeipa_client
-
-dependencies:
-  - src: https://github.com/cisagov/ansible-role-backports
-    name: backports
