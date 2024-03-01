@@ -90,7 +90,8 @@ function install {
   # "undefined variable" warning from shellcheck.
   #
   # shellcheck disable=SC2154
-  ipa-client-install --hostname="$hostname" \
+  ipa-client-install --force-join \
+    --hostname="$hostname" \
     --mkhomedir \
     --no-ntp
 
