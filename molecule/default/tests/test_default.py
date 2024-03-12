@@ -12,18 +12,20 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 ).get_hosts("all")
 
 
-@pytest.mark.parametrize("pkg", ["ipa-client", "sssd-tools"])
-def test_packages_amazon(host, pkg):
+def test_packages(host):
     """Test that the appropriate packages were installed."""
-    if host.system_info.distribution == "amzn":
-        assert host.package(pkg).is_installed
-
-
-@pytest.mark.parametrize("pkg", ["freeipa-client", "sssd-tools"])
-def test_packages_not_amazon(host, pkg):
-    """Test that the appropriate packages were installed."""
-    if host.system_info.distribution != "amzn":
-        assert host.package(pkg).is_installed
+    distribution = host.system_info.distribution
+    if host.system_info.distribution in ["amzn"]:
+        pkgs = ["ipa-client", "sssd-tools"]
+    elif distribution in ["debian", "fedora", "kali", "ubuntu"]:
+        pkgs = ["freeipa-client", "sssd-tools"]
+    else:
+        # We don't support this distribution
+        assert False, f"Unknown distribution {distribution}"
+    packages = [host.package(pkg) for pkg in pkgs]
+    installed = [package.is_installed for package in packages]
+    assert len(pkgs) != 0
+    assert all(installed)
 
 
 @pytest.mark.parametrize(
