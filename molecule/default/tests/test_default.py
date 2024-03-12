@@ -15,7 +15,7 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 def test_packages(host):
     """Test that the appropriate packages were installed."""
     distribution = host.system_info.distribution
-    if host.system_info.distribution in ["amzn"]:
+    if distribution in ["amzn"]:
         pkgs = ["ipa-client", "sssd-tools"]
     elif distribution in ["debian", "fedora", "kali", "ubuntu"]:
         pkgs = ["freeipa-client", "sssd-tools"]
