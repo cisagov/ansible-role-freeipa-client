@@ -32,14 +32,20 @@ galaxy_info:
         - buster
         - bullseye
         - bookworm
-        - trixie
+        # Debian Trixie does not currently offer an IPA client
+        # package:
+        # https://packages.debian.org/search?suite=all&searchon=names&keywords=freeipa
+        # - trixie
     - name: Fedora
       versions:
         - "39"
         - "40"
-    - name: Kali
-      versions:
-        - "2023"
+    # Kali is based on Debian Trixie and therefore does not currently
+    # offer an IPA client package either:
+    # https://packages.debian.org/search?suite=all&searchon=names&keywords=freeipa
+    # - name: Kali
+    #   versions:
+    #     - "2023"
     - name: Ubuntu
       versions:
         - focal
