@@ -22,31 +22,23 @@ galaxy_info:
   min_ansible_version: "2.10"
   namespace: cisagov
   platforms:
-    # Amazon Linux 2023 does not not currently offer an IPA client package:
-    # https://docs.aws.amazon.com/linux/al2023/release-notes/all-packages-al2023-20230419.html
-    # - name: Amazon Linux
-    #   versions:
-    #     - "2023"
+    - name: Amazon Linux
+      versions:
+        - "2023"
     - name: Debian
       versions:
         - buster
         - bullseye
         - bookworm
-        # Debian Trixie does not currently offer an IPA client
-        # package:
-        # https://packages.debian.org/search?suite=all&searchon=names&keywords=freeipa
-        # - trixie
+        - trixie
     - name: Fedora
       versions:
         - "39"
         - "40"
         - "41"
-    # Kali is based on Debian Trixie and therefore does not currently
-    # offer an IPA client package either:
-    # https://packages.debian.org/search?suite=all&searchon=names&keywords=freeipa
-    # - name: Kali
-    #   versions:
-    #     - "2023"
+    - name: Kali
+      versions:
+        - "2023"
     - name: Ubuntu
       versions:
         - focal
