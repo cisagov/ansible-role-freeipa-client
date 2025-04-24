@@ -1,8 +1,1 @@
----
-# vars file for Fedora
-
-# The packages to install for FreeIPA/IPA client
-package_names:
-  - freeipa-client
-  # This package provides sss_cache and other sometimes-useful tools
-  - sssd-tools
+Debian.yml
