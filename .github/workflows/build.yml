@@ -216,24 +216,15 @@ jobs:
           - amd64
           - arm64
         platform:
-          # Amazon Linux 2023 does not currently offer an IPA client
-          # package:
-          # https://docs.aws.amazon.com/linux/al2023/release-notes/all-packages-al2023-20230419.html
-          # - amazonlinux2023-systemd
+          - amazonlinux2023-systemd
           - debian10-systemd
           - debian11-systemd
           - debian12-systemd
-          # Debian Trixie does not currently offer an IPA client
-          # package:
-          # https://packages.debian.org/search?suite=all&searchon=names&keywords=freeipa
-          # - debian13-systemd
+          - debian13-systemd
           - fedora39-systemd
           - fedora40-systemd
           - fedora41-systemd
-          # Kali is based on Debian Trixie and therefore does not
-          # currently offer an IPA client package either:
-          # https://packages.debian.org/search?suite=all&searchon=names&keywords=freeipa
-          # - kali-systemd
+          - kali-systemd
           - ubuntu-20-systemd
           - ubuntu-22-systemd
           - ubuntu-24-systemd
