@@ -1,6 +1,7 @@
 # ansible-role-freeipa-client #
 
 [![GitHub Build Status](https://github.com/cisagov/ansible-role-freeipa-client/workflows/build/badge.svg)](https://github.com/cisagov/ansible-role-freeipa-client/actions)
+[![License](https://img.shields.io/github/license/cisagov/ansible-role-freeipa-client)](https://spdx.org/licenses/)
 [![CodeQL](https://github.com/cisagov/ansible-role-freeipa-client/workflows/CodeQL/badge.svg)](https://github.com/cisagov/ansible-role-freeipa-client/actions/workflows/codeql-analysis.yml)
 
 This is an Ansible role for installing the prerequisites for a
