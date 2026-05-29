@@ -19,7 +19,7 @@ def test_packages(host):
         pkgs = ["freeipa-client", "sssd-tools"]
     else:
         # We don't support this distribution
-        assert False, f"Unknown distribution {distribution}"
+        raise ValueError(f"Unknown distribution {distribution}")
     packages = [host.package(pkg) for pkg in pkgs]
     installed = [package.is_installed for package in packages]
     assert len(pkgs) != 0
